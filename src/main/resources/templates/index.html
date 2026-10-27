@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${perfil.nome} + ' | Portfólio'">Portfólio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<header class="navbar" id="navbar">
+    <div class="container nav-content">
+        <a href="#inicio" class="logo">
+            <span class="logo-mark" th:text="${perfil.iniciais}">DC</span>
+            <span th:text="${perfil.nome}">Nome</span>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav-links" id="navLinks">
+            <a href="#inicio" class="active">Início</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#habilidades">Habilidades</a>
+            <a href="#projetos">Projetos</a>
+            <a href="#contato" class="nav-cta">Contato</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="inicio">
+        <div class="container hero-grid">
+            <div class="hero-text reveal">
+                <span class="badge"><span class="dot"></span> Disponível para projetos</span>
+                <h1>Olá, eu sou <span class="highlight" th:text="${perfil.nome}">Nome</span></h1>
+                <p class="typed-line">
+                    <span id="typed" th:attr="data-funcoes=${#strings.listJoin(perfil.funcoes, '|')}"
+                          th:text="${perfil.funcoes[0]}">Função</span><span class="cursor">|</span>
+                </p>
+                <p class="hero-resumo" th:text="${perfil.resumo}">Resumo</p>
+                <div class="hero-actions">
+                    <a href="#projetos" class="btn btn-primary">Ver projetos</a>
+                    <a href="#contato" class="btn btn-ghost">Fale comigo</a>
+                </div>
+            </div>
+
+            <div class="hero-card reveal">
+                <div class="avatar" th:text="${perfil.iniciais}">DC</div>
+                <h3 th:text="${perfil.titulo}">Título</h3>
+                <p class="muted" th:text="${perfil.empresa}">Empresa</p>
+                <div class="stats">
+                    <div>
+                        <strong th:text="${#lists.size(projetos)}">0</strong>
+                        <span>Projetos</span>
+                    </div>
+                    <div>
+                        <strong th:text="${perfil.semestre.substring(0, 2)}">8º</strong>
+                        <span>Semestre</span>
+                    </div>
+                    <div>
+                        <strong th:text="${#lists.size(categorias)}">0</strong>
+                        <span>Áreas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SOBRE ===== -->
+    <section class="section" id="sobre">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="eyebrow">Sobre mim</span>
+                <h2>Tecnologia e marketing trabalhando juntos</h2>
+            </div>
+
+            <div class="sobre-grid">
+                <div class="info-cards reveal">
+                    <div class="info-card">
+                        <span class="info-label">Idade</span>
+                        <strong th:text="${perfil.idade} + ' anos'">21 anos</strong>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Curso</span>
+                        <strong th:text="${perfil.curso}">Curso</strong>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Período</span>
+                        <strong th:text="${perfil.semestre}">Semestre</strong>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-label">Empresa</span>
+                        <strong th:text="${perfil.empresa}">Empresa</strong>
+                    </div>
+                </div>
+
+                <!-- Linha do tempo gerada a partir da lista "experiencias" do Controller -->
+                <ol class="timeline reveal">
+                    <li th:each="exp : ${experiencias}">
+                        <span class="timeline-periodo" th:text="${exp.periodo}">Período</span>
+                        <h3 th:text="${exp.titulo}">Título</h3>
+                        <p class="timeline-local" th:text="${exp.local}">Local</p>
+                        <p th:text="${exp.descricao}">Descrição</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HABILIDADES ===== -->
+    <section class="section section-alt" id="habilidades">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="eyebrow">Habilidades</span>
+                <h2>O que eu uso no dia a dia</h2>
+            </div>
+
+            <div class="skills-grid">
+                <!-- habilidades é um Map: grupo.key = nome da área, grupo.value = lista de habilidades -->
+                <div class="skill-group reveal" th:each="grupo : ${habilidades}">
+                    <h3 th:text="${grupo.key}">Área</h3>
+                    <div class="skill" th:each="hab : ${grupo.value}">
+                        <div class="skill-top">
+                            <span th:text="${hab.nome}">Habilidade</span>
+                            <span class="muted" th:text="${hab.nivel} + '%'">0%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill" th:attr="data-nivel=${hab.nivel}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROJETOS ===== -->
+    <section class="section" id="projetos">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="eyebrow">Projetos</span>
+                <h2>Alguns trabalhos que desenvolvi</h2>
+            </div>
+
+            <div class="filtros reveal" id="filtros">
+                <button class="filtro active" data-filtro="todos">Todos</button>
+                <button class="filtro" th:each="cat : ${categorias}"
+                        th:attr="data-filtro=${cat}" th:text="${cat}">Categoria</button>
+            </div>
+
+            <div class="projetos-grid">
+                <article class="projeto-card reveal" th:each="projeto : ${projetos}"
+                         th:classappend="${projeto.destaque} ? 'destaque'"
+                         th:attr="data-categoria=${projeto.categoria}">
+                    <div class="projeto-topo">
+                        <span class="projeto-icone" th:text="${projeto.icone}">*</span>
+                        <span class="tag-categoria" th:text="${projeto.categoria}">Categoria</span>
+                    </div>
+                    <span class="selo-destaque" th:if="${projeto.destaque}">Destaque</span>
+                    <h3 th:text="${projeto.titulo}">Projeto</h3>
+                    <p th:text="${projeto.descricao}">Descrição</p>
+                    <ul class="techs">
+                        <li th:each="tech : ${projeto.tecnologias}" th:text="${tech}">Tech</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTATO ===== -->
+    <section class="section section-alt" id="contato">
+        <div class="container contato-grid">
+            <div class="contato-texto reveal">
+                <span class="eyebrow">Contato</span>
+                <h2>Vamos conversar?</h2>
+                <p class="muted">Tem uma ideia, projeto ou oportunidade? Mande uma mensagem pelo formulário
+                    ou direto no e-mail.</p>
+                <a class="email-link" th:href="'mailto:' + ${perfil.email}" th:text="${perfil.email}">email</a>
+                <p class="contador" th:if="${totalMensagens > 0}">
+                    <strong th:text="${totalMensagens}">0</strong>
+                    <span th:text="${totalMensagens == 1} ? 'mensagem recebida nesta sessão do servidor' : 'mensagens recebidas nesta sessão do servidor'">mensagens</span>
+                </p>
+            </div>
+
+            <!-- Formulário ligado ao objeto "contato" e enviado para POST /contato -->
+            <form class="contato-form reveal" th:action="@{/contato}" th:object="${contato}" method="post" id="formContato" novalidate>
+                <div class="alerta sucesso" th:if="${sucesso}" th:text="${sucesso}">Sucesso</div>
+                <div class="alerta erro" th:if="${erro}" th:text="${erro}">Erro</div>
+
+                <label for="nome">Nome</label>
+                <input type="text" th:field="*{nome}" placeholder="Seu nome" required>
+
+                <label for="email">E-mail</label>
+                <input type="email" th:field="*{email}" placeholder="voce@email.com" required>
+
+                <label for="mensagem">Mensagem</label>
+                <textarea th:field="*{mensagem}" rows="5" placeholder="Escreva sua mensagem" maxlength="500" required></textarea>
+                <span class="char-count" id="charCount">0/500</span>
+
+                <button type="submit" class="btn btn-primary">Enviar mensagem</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <p>&copy; <span th:text="${ano}">2026</span> <span th:text="${perfil.nome}">Nome</span>. Feito com Spring Boot e Thymeleaf.</p>
+        <a href="#inicio" class="voltar-topo" aria-label="Voltar ao topo">↑</a>
+    </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
